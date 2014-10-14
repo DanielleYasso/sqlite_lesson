@@ -7,18 +7,22 @@ def get_student_by_github(github):
     query = """SELECT first_name, last_name, github FROM Students WHERE github = ?"""
     DB.execute(query, (github,))
     row = DB.fetchone()
-    print """\
-Student: %s %s
-Github account: %s"""%(row[0], row[1], row[2])
+    try:
+        print """\
+        Student: %s %s
+        Github account: %s"""%(row[0], row[1], row[2])
+    except TypeError:
+        print "Student '%s' not found" % github
+        print "To add student '%s' to student list, use the command 'new_student'" % github
 
 def get_project_by_title(title):
     query = """SELECT description, max_grade, title FROM Projects WHERE title = ?"""
     DB.execute(query, (title,))
     row = DB.fetchone()
     print """\
-    title: %s
-    description: %s
-    max_grade: %s""" % (row[2], row[0], row[1])
+    Title: %s
+    Description: %s
+    Max_grade: %s""" % (row[2], row[0], row[1])
 
 def get_student_grade(project, github):
     query = """SELECT grade FROM Grades WHERE project_title = ? AND student_github = ?"""
@@ -34,6 +38,11 @@ def get_all_grades(github):
     for row in DB.execute(query, (github,)):
         print """\
         Project: %s, grade %s""" % (row[1], row[0])
+
+def get_all_students():
+    query = """SELECT github FROM Students"""
+    for github in DB.execute(query):
+        print github[0]
 
 def connect_to_db():
     global DB, CONN
@@ -58,6 +67,11 @@ def give_grade_to_student(project, github, grade):
     CONN.commit()
     print "Successfully added grade %s for student %s for project %s" % (grade, github, project)
 
+def list_commands():
+    print "Commands available:"
+    for command, info in COMMANDS.iteritems():
+        print "%s:\n\t%s \n\tformat: %s \n" % (command, info[1], info[2])
+
 def main():
     connect_to_db()
     command = None
@@ -67,22 +81,26 @@ def main():
         command = tokens[0]
         args = tokens[1:]
 
-        if command == "student":
-            get_student_by_github(*args) 
-        elif command == "new_student":
-            make_new_student(*args)
-        elif command == "project":
-            get_project_by_title(*args)
-        elif command == "new_project":
-            make_new_project(*args)
-        elif command == "get_grade_for":
-            get_student_grade(*args)
-        elif command == "give_grade":
-            give_grade_to_student(*args)
-        elif command == "all_grades_for_student":
-            get_all_grades(*args)
+        try:
+            COMMANDS[command][0](*args)
+        except TypeError:
+            print "Incorrect syntax. Use 'help' for specific query formatting."
+        except KeyError:
+            print "Command not recognized. Please use 'help' to view valid commands."
 
     CONN.close()
+
+COMMANDS = {
+            "student":      [get_student_by_github, "lists student information", "student <github>"],
+            "new_student":  [make_new_student, "adds a new student to the student list", "new_student <first_name> <last_name> <github>"],
+            "project":      [get_project_by_title, "gets a project by title", "project <title>"],
+            "new_project":  [make_new_project, "adds a new project to project list", "new_project <title> <description> <max_grade>"],
+            "get_grade_for": [get_student_grade, "gets a student's grade for a project", "get_grade_for <project> <github>"],
+            "give_grade":   [give_grade_to_student, "gives project grade to student", "give_grade <project> <github> <grade>"],
+            "all_grades_for_student": [get_all_grades, "lists all grades for a student", "all_grades_for_student <github>"],
+            "get_students": [get_all_students, "lists all available students", "get_students"],
+            "help": [list_commands, "lists available commands", ""]
+            }
 
 if __name__ == "__main__":
     main()
