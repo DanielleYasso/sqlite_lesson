@@ -19,26 +19,39 @@ def get_project_by_title(title):
     query = """SELECT description, max_grade, title FROM Projects WHERE title = ?"""
     DB.execute(query, (title,))
     row = DB.fetchone()
-    print """\
-    Title: %s
-    Description: %s
-    Max_grade: %s""" % (row[2], row[0], row[1])
+    try:
+        print """\
+        Title: %s
+        Description: %s
+        Max_grade: %s""" % (row[2], row[0], row[1])
+    except TypeError:
+        print "Project '%s' not found" % title
+        print "To add project '%s' to project list, use the command 'new_project'" % title
 
 def get_student_grade(project, github):
     query = """SELECT grade FROM Grades WHERE project_title = ? AND student_github = ?"""
     DB.execute(query, (project, github))
     row = DB.fetchone()
-    print """\
-    Project: %s
-    Student Github: %s
-    Grade: %s""" % (project, github, row[0])
+    try:
+        print """\
+        Project: %s
+        Student Github: %s
+        Grade: %s""" % (project, github, row[0])
+    except TypeError:
+        print "Either the project title or student github (or both) was not found."
+        print "Use the command 'student <github>' to confirm student is in the list."
+        print "Use the command 'project <title>' to confirm the project exists."
 
 def get_all_grades(github):
     query = """SELECT grade, project_title FROM Grades WHERE student_github = ?"""
-    for row in DB.execute(query, (github,)):
-        print """\
-        Project: %s, grade %s""" % (row[1], row[0])
-
+    rows = DB.execute(query, (github,)).fetchall()
+    if rows == []:
+        print "Student '%s' not found" % github
+        print "To add student '%s' to student list, use the command 'new_student'" % github
+    else:
+        for row in rows:
+            print "Project: %s, grade %s" % (row[1], row[0])
+      
 def get_all_students():
     query = """SELECT github FROM Students"""
     for github in DB.execute(query):
@@ -77,6 +90,7 @@ def main():
     command = None
     while command != "quit":
         input_string = raw_input("HBA Database> ")
+
         tokens = input_string.split()
         command = tokens[0]
         args = tokens[1:]
