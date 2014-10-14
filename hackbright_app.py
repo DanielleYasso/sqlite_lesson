@@ -105,15 +105,32 @@ def main():
     CONN.close()
 
 COMMANDS = {
-            "student":      [get_student_by_github, "lists student information", "student <github>"],
-            "new_student":  [make_new_student, "adds a new student to the student list", "new_student <first_name> <last_name> <github>"],
-            "project":      [get_project_by_title, "gets a project by title", "project <title>"],
-            "new_project":  [make_new_project, "adds a new project to project list", "new_project <title> <description> <max_grade>"],
-            "get_grade_for": [get_student_grade, "gets a student's grade for a project", "get_grade_for <project> <github>"],
-            "give_grade":   [give_grade_to_student, "gives project grade to student", "give_grade <project> <github> <grade>"],
-            "all_grades_for_student": [get_all_grades, "lists all grades for a student", "all_grades_for_student <github>"],
-            "get_students": [get_all_students, "lists all available students", "get_students"],
-            "help": [list_commands, "lists available commands", ""]
+            "student":      [get_student_by_github, 
+                            "lists student information", 
+                            "student <github>"],
+            "new_student":  [make_new_student, 
+                            "adds a new student to the student list", 
+                            "new_student <first_name> <last_name> <github>"],
+            "project":      [get_project_by_title, 
+                            "gets a project by title", 
+                            "project <title>"],
+            "new_project":  [make_new_project, 
+                            "adds a new project to project list", 
+                            "new_project <title> <description> <max_grade>"],
+            "get_grade_for": [get_student_grade, 
+                            "gets a student's grade for a project", 
+                            "get_grade_for <project> <github>"],
+            "give_grade":   [give_grade_to_student, 
+                            "gives project grade to student", 
+                            "give_grade <project> <github> <grade>"],
+            "grades_for":   [get_all_grades, 
+                            "lists all grades for a student", 
+                            "all_grades_for_student <github>"],
+            "get_students": [get_all_students, 
+                            "lists all available students", 
+                            "get_students"],
+            "help":         [list_commands, 
+                            "lists available commands", ""]
             }
 
 if __name__ == "__main__":
