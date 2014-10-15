@@ -7,13 +7,14 @@ def get_student_by_github(github):
     query = """SELECT first_name, last_name, github FROM Students WHERE github = ?"""
     DB.execute(query, (github,))
     row = DB.fetchone()
-    try:
-        print """\
-        Student: %s %s
-        Github account: %s"""%(row[0], row[1], row[2])
-    except TypeError:
-        print "Student '%s' not found" % github
-        print "To add student '%s' to student list, use the command 'new_student'" % github
+    return row
+    # try:
+    #     return """\
+    #     Student: %s %s
+    #     Github account: %s"""%(row[0], row[1], row[2])
+    # except TypeError:
+    #     return """Student '%s' not found. To add student '%s' to student list, 
+    #     use the command 'new_student'""" % (github, github)
 
 def get_project_by_title(title):
     query = """SELECT description, max_grade, title FROM Projects WHERE title = ?"""
@@ -42,15 +43,20 @@ def get_student_grade(project, github):
         print "Use the command 'student <github>' to confirm student is in the list."
         print "Use the command 'project <title>' to confirm the project exists."
 
+def get_grades_for_project(project):
+    query = """SELECT student_github, grade FROM Grades WHERE project_title = ?"""
+    return DB.execute(query, (project,)).fetchall()
+
 def get_all_grades(github):
     query = """SELECT grade, project_title FROM Grades WHERE student_github = ?"""
     rows = DB.execute(query, (github,)).fetchall()
-    if rows == []:
-        print "Student '%s' not found" % github
-        print "To add student '%s' to student list, use the command 'new_student'" % github
-    else:
-        for row in rows:
-            print "Project: %s, grade %s" % (row[1], row[0])
+    return rows
+    # if rows == []:
+    #     print "Student '%s' not found" % github
+    #     print "To add student '%s' to student list, use the command 'new_student'" % github
+    # else:
+    #     for row in rows:
+    #         print "Project: %s, grade %s" % (row[1], row[0])
       
 def get_all_students():
     query = """SELECT github FROM Students"""

@@ -1,0 +1,19 @@
+<html>
+<head>
+    <title></title>
+</head>
+<body>
+
+<h1>Project: {{ project }}</h1>
+
+ {% if project_data %}
+    <p>Grades</p>
+    <ul>
+        {% for github, grade in project_data %}
+        <li>Student github: <a href="/student?github={{ github }}">{{ github }}</a>, Grade: {{ grade }}</li>
+        {% endfor %}
+    </ul>
+ {% endif %}
+
+</body>
+</html>
