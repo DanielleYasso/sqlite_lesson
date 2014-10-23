@@ -1,8 +1,6 @@
-<html>
-<head>
-    <title></title>
-</head>
-<body>
+{% extends 'get_github.html' %}
+
+{% block body %}
 
 <h1>Student: {{ last_name }}, {{ first_name }}</h1>
 <h2>Github account: {{ github }}</h2>
@@ -20,6 +18,4 @@
 <p>It is my recommendation that they be put on double-secret probation for the remainder of the course.</p>
 
 
-
-</body>
-</html>
+{% endblock %}

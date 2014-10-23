@@ -1,8 +1,6 @@
-<html>
-<head>
-    <title></title>
-</head>
-<body>
+{% extends 'get_github.html' %}
+
+{% block body %}
 
 <h1>Project: {{ project }}</h1>
 
@@ -15,5 +13,6 @@
     </ul>
  {% endif %}
 
-</body>
-</html>
+
+
+{% endblock %}

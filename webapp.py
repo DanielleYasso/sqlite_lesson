@@ -1,7 +1,9 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, flash
 import hackbright_app
 
 app = Flask(__name__)
+# added for flash - including for testing exercise
+app.secret_key = '\xf5!\x07!qj\xa4\x08\xc6\xf8\n\x8a\x95m\xe2\x04g\xbb\x98|U\xa2f\x03'
 
 @app.route("/")
 def get_github():
@@ -11,7 +13,11 @@ def get_github():
 def get_student():
     hackbright_app.connect_to_db()
     student_github = request.args.get("github")
+
     row = hackbright_app.get_student_by_github(student_github)
+    if not row:
+        flash("Please enter a valid student github")
+        return redirect("/")
     data = get_all_grades(student_github)
     html = render_template("student_info.html", first_name=row[0],
                                                 last_name=row[1],

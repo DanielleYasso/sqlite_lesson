@@ -8,5 +8,18 @@
     <input type="text" name="github"/>
     <input type="submit">
 </form>
+{% with messages = get_flashed_messages() %}
+	{% if messages %}
+		{% for message in messages %}
+			<p style="color: red">
+			{{message}}
+			</p>
+
+		{% endfor %}
+	{% endif %}
+{% endwith %}
+
+{% block body %}{% endblock %}
+
 </body>
 </html>
