@@ -4,8 +4,11 @@
 
 <h1>Project: {{ project }}</h1>
 
+	<p><b>Description:</b> {{ description }}</p>
+	<p><b>Maximum Grade:</b> {{ max_grade }}</p>
+
  {% if project_data %}
-    <p>Grades</p>
+    <h4>Grades</h4>
     <ul>
         {% for github, grade in project_data %}
         <li>Student github: <a href="/student?github={{ github }}">{{ github }}</a>, Grade: {{ grade }}</li>
