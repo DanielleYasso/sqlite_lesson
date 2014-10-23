@@ -21,17 +21,18 @@ def get_student_by_github(github):
     return row
 
 def get_project_by_title(title):
-    query = """SELECT description, max_grade, title FROM Projects WHERE title = ?"""
+    query = """SELECT description, max_grade FROM Projects WHERE title = ?"""
     DB.execute(query, (title,))
-    description, max_grade, title = DB.fetchone()
-    try:
-        print """\
-        Title: %s
-        Description: %s
-        Max_grade: %s""" % (title, description, max_grade)
-    except TypeError:
-        print "Project '%s' not found" % title
-        print "To add project '%s' to project list, use the command 'new_project'" % title
+    row = DB.fetchone()
+    return row
+    # try:
+    #     print """\
+    #     Title: %s
+    #     Description: %s
+    #     Max_grade: %s""" % (title, description, max_grade)
+    # except TypeError:
+    #     print "Project '%s' not found" % title
+    #     print "To add project '%s' to project list, use the command 'new_project'" % title
 
 def get_student_grade(project, github):
     query = """SELECT grade FROM Grades WHERE project_title = ? AND student_github = ?"""

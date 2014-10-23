@@ -33,12 +33,28 @@ def get_grades_for_project():
     hackbright_app.connect_to_db()
     project_title = request.args.get("project")
     data = hackbright_app.get_grades_for_project(project_title)
-    if not data:
-        flash("Please enter a valid project title")
-        return redirect("/")
     html = render_template("project.html", project=project_title,
                                            project_data=data)
     return html
+
+@app.route("/project_title")
+def get_project_by_title():
+    hackbright_app.connect_to_db()
+    project_title = request.args.get("project")
+    project_data = hackbright_app.get_project_by_title(project_title)
+
+    if not project_data:
+        flash("Please enter a valid project title")
+        flash("Beware: titles are case sensitive!")
+        return redirect("/")
+    description, max_grade  = project_data
+
+    html = render_template("project_info.html", description=description,
+                                                max_grade=max_grade,
+                                                title=project_title)
+
+    return html
+
 
 if __name__ == "__main__":
     app.run(debug=True)
