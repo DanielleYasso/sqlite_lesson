@@ -33,6 +33,9 @@ def get_grades_for_project():
     hackbright_app.connect_to_db()
     project_title = request.args.get("project")
     data = hackbright_app.get_grades_for_project(project_title)
+    if not data:
+        flash("Please enter a valid project title")
+        return redirect("/")
     html = render_template("project.html", project=project_title,
                                            project_data=data)
     return html

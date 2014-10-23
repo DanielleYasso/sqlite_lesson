@@ -3,10 +3,16 @@
     <title></title>
 </head>
 <body>
-<form action="/student">
+<form action="/student" name="githubQuery">
     <label for="github">Enter github id</label>
     <input type="text" name="github"/>
-    <input type="submit">
+    <input type="submit" value="Get Grades">
+</form>
+
+<form action="/project" name="projectQuery">
+	<label for="project">Enter project title</label>
+	<input type="text" name="project" />
+	<input type="submit" value="Get Project Info">
 </form>
 {% with messages = get_flashed_messages() %}
 	{% if messages %}

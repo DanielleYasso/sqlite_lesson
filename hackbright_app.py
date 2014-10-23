@@ -3,28 +3,32 @@ import sqlite3
 DB = None
 CONN = None
 
+
+def connect_to_db():
+    global DB, CONN
+    CONN = sqlite3.connect("hackbright.db")
+    DB = CONN.cursor()
+
+
+####################
+# GETTER FUNCTIONS #
+####################
+
 def get_student_by_github(github):
     query = """SELECT first_name, last_name, github FROM Students WHERE github = ?"""
     DB.execute(query, (github,))
     row = DB.fetchone()
     return row
-    # try:
-    #     return """\
-    #     Student: %s %s
-    #     Github account: %s"""%(row[0], row[1], row[2])
-    # except TypeError:
-    #     return """Student '%s' not found. To add student '%s' to student list, 
-    #     use the command 'new_student'""" % (github, github)
 
 def get_project_by_title(title):
     query = """SELECT description, max_grade, title FROM Projects WHERE title = ?"""
     DB.execute(query, (title,))
-    row = DB.fetchone()
+    description, max_grade, title = DB.fetchone()
     try:
         print """\
         Title: %s
         Description: %s
-        Max_grade: %s""" % (row[2], row[0], row[1])
+        Max_grade: %s""" % (title, description, max_grade)
     except TypeError:
         print "Project '%s' not found" % title
         print "To add project '%s' to project list, use the command 'new_project'" % title
@@ -51,22 +55,18 @@ def get_all_grades(github):
     query = """SELECT grade, project_title FROM Grades WHERE student_github = ?"""
     rows = DB.execute(query, (github,)).fetchall()
     return rows
-    # if rows == []:
-    #     print "Student '%s' not found" % github
-    #     print "To add student '%s' to student list, use the command 'new_student'" % github
-    # else:
-    #     for row in rows:
-    #         print "Project: %s, grade %s" % (row[1], row[0])
       
 def get_all_students():
     query = """SELECT github FROM Students"""
     for github in DB.execute(query):
         print github[0]
 
-def connect_to_db():
-    global DB, CONN
-    CONN = sqlite3.connect("hackbright.db")
-    DB = CONN.cursor()
+
+
+
+####################
+# SETTER FUNCTIONS #
+####################
 
 def make_new_student(first_name, last_name, github):
     query = """INSERT into Students values (?, ?, ?)"""
@@ -110,6 +110,13 @@ def main():
 
     CONN.close()
 
+
+
+######################
+# COMMAND DICTIONARY #
+######################
+
+# for use with command line
 COMMANDS = {
             "student":      [get_student_by_github, 
                             "lists student information", 
